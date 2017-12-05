@@ -53,6 +53,7 @@ var Leaflet = Base.extend({
     if (component instanceof ffwdme.components.AutoZoom && this.inRouteOverview) { return false; }
     if (component instanceof ffwdme.components.AutoZoomNextTurn && this.inRouteOverview) { return false; }
     if (component instanceof ffwdme.components.MapRotator && this.inRouteOverview) { return false; }
+    if (component instanceof ffwdme.components.MapRotatorCompass && this.inRouteOverview) { return false; }
     return true;
   },
 
