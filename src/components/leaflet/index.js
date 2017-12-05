@@ -23,6 +23,8 @@ var Leaflet = Base.extend({
     ffwdme.on('reroutecalculation:success', this.drawRoute);
   },
 
+  classname: "Leaflet",
+
   attrAccessible: ['el', 'apiKey'],
 
   map: null,
@@ -49,6 +51,7 @@ var Leaflet = Base.extend({
 
   canControlMap: function(component) {
     if (component instanceof ffwdme.components.AutoZoom && this.inRouteOverview) { return false; }
+    if (component instanceof ffwdme.components.AutoZoomNextTurn && this.inRouteOverview) { return false; }
     if (component instanceof ffwdme.components.MapRotator && this.inRouteOverview) { return false; }
     return true;
   },
@@ -164,6 +167,14 @@ var Leaflet = Base.extend({
     this.drawMarkerOnMap(p.lat, p.lng, true);
     this.drawHelpLine(e.navInfo.positionRaw, e.navInfo.position);
   },
+  removeRouteFromMap: function() {
+    if (this.polylines) {
+        this.map.removeLayer(this.polylines.underlay);
+        this.map.removeLayer(this.polylines.overlay);
+        this.polylines = null;
+        this.map.removeLayer(this.finishMarker);
+    }
+  },
 
   drawPolylineOnMap: function(route, center){
     var directions = route.directions, len = directions.length, len2, path;
@@ -200,9 +211,9 @@ var Leaflet = Base.extend({
     var loc = new L.LatLng(lat, lng);
     this.marker.setLatLng(loc);
     if (center && !this.inRouteOverview) {
-      this.map.setView(loc, this.getZoom());
+        this.map.setView(loc, this.getZoom());
     } else {
-      this.map.fitBounds(this.polylines.overlay.getBounds());
+        if (this.polylines !== null) this.map.fitBounds(this.polylines.overlay.getBounds());
     }
   },
 
