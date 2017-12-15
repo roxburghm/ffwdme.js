@@ -14,8 +14,8 @@ var DistanceToDestination = BaseIcon.extend({
     var unit = ' m';
 
     // 1243 m = 1.2 km
-    if (distance > 1000) {
-      distance = (distance/1000).toFixed(1);
+    if (distance > 10000) {
+      distance = (distance/1000).toFixed(0);
       unit = ' km';
     // 859 m = 900 m
     } else if (distance > 500) {
