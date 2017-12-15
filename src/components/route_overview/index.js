@@ -28,7 +28,9 @@ var RouteOverview = Base.extend({
     this.setIcon();
     this.setOpacity();
 
-    setTimeout(function() {ffwdme.trigger('geoposition:update', ffwdme.geolocation.last)}, 200);
+    setTimeout(function() {
+        ffwdme.geolocation.last && ffwdme.trigger('geoposition:update', ffwdme.geolocation.last);
+    }, 200);
   },
 
 
