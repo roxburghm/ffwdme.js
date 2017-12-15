@@ -49,8 +49,7 @@ var AudioInstructionsWeb = Base.extend({
     if (!distance || !nextDirection) return;
 
     var action = this.audioAction(distance, nextDirection.turnType);
-    console.log('Audio: ' + action);
-    if (action.length && action != this.lastAction){
+    if (action.length && action !== this.lastAction){
       this.player.play(action, nextDirection);
       this.lastAction = action;
     }
@@ -66,6 +65,7 @@ var AudioInstructionsWeb = Base.extend({
   forwardMetersBySpeed: function(speed) {
     //something wrong
     if (speed === 0) return 40;
+    if (isNaN(speed)) return 40;
 
     var fm = 20;
 
