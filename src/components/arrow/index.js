@@ -96,17 +96,54 @@ var Arrow = Base.extend({
         }
 
         if (distance) {
+            var width;
+            var tooFar = false;
             if (distance > this.announceDist) {
-                distance = 0;
+                tooFar = true;
             } else if (distance > 100) {
-                distance = 100;
+                width = 100;
+            } else {
+                width = distance;
             }
 
-            distance = Math.floor(distance/10) * 10;
-            $(this.distEl).attr('style', 'width: ' + distance + '%');
+            width = Math.floor(width/10) * 10; // 10, 20, 30, 40 ... 90
+
+            if (tooFar) {
+                $(this.distEl).addClass('ffwdme-components-progress-numeric').attr('style', 'width: 100%').html(this.niceDistance(distance));
+            } else {
+                $(this.distEl).removeClass('ffwdme-components-progress-numeric').attr('style', 'width: ' + width + '%').html('');
+            }
+
         }
 
         this.updateIcon(turnType);
+    },
+
+    niceDistance: function(distance, units) {
+
+        var displayUnits = 'km';
+        if (units === 'mi') {
+            displayDistance = distance / 1600;
+            displayUnits = 'mi';
+        } else {
+            displayDistance = distance / 1000;
+        }
+
+        if (displayDistance < 1) {
+            displayDistance *= 1000;
+            displayDistance = (displayDistance / 50).toFixed(0) * 50;
+            displayUnits = (units === 'mi')?'y':'m';
+        } else {
+            if (displayDistance > 10) {
+                displayDistance = displayDistance.toFixed(0);
+            } else {
+                displayDistance = displayDistance.toFixed(1);
+            }
+        }
+
+
+        return displayDistance + displayUnits;
+
     },
 
     updateIcon: function (turnType) {
