@@ -89,7 +89,7 @@ var NavStart = Base.extend({
             widgets.addClass("ffwdme-nav-idle");
         }
 
-        if (this.destination === null) {
+        if (this.destination === null || this.currentCoordinates === null) {
             $(this.el).addClass('ffwdme-nav-no-dest');
         } else {
             $(this.el).removeClass('ffwdme-nav-no-dest');
@@ -129,7 +129,10 @@ var NavStart = Base.extend({
           }
          */
 
+        var oldCoordinates = this.currentCoordinates;
         this.currentCoordinates = e.geoposition.coords;
+
+        if (oldCoordinates === null && this.currentCoordinates !== null) this.setOpacity();
 
     },
 
