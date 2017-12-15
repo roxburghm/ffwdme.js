@@ -8,6 +8,10 @@ var Leaflet = Base.extend({
      *
      */
     constructor: function (options) {
+
+        this.finishIcon = ffwdme.defaults.imageBaseUrl + 'leaflet/map_marker.png',
+        this.finishShadow = ffwdme.defaults.imageBaseUrl + 'leaflet/map_marker_shadow.png',
+
         this.base(options);
         this.bindAll(this, 'resize', 'drawRoute', 'drawMarkerWithoutRoute', 'onRouteSuccess', 'navigationOnRoute', 'navigationOffRoute', 'rotateMarker', 'setupMap');
 
@@ -25,7 +29,11 @@ var Leaflet = Base.extend({
 
     classname: "Leaflet",
 
-    attrAccessible: ['el', 'apiKey', 'minZoom', 'maxZoom'],
+    attrAccessible: ['el', 'apiKey', 'minZoom', 'maxZoom', 'finishIcon', 'finishShadow'],
+
+    finishIcon: null,
+
+    finishShadow: null,
 
     minZoom: 10,
 
@@ -47,11 +55,15 @@ var Leaflet = Base.extend({
 
     inRouteOverview: false,
 
+    doneRouteOverview: false,
+
     mapReady: false,
 
     mapReadyCallbacks: null,
 
     userZoom: 0,
+
+    additionalBounds: null,
 
     canControlMap: function (component) {
         if (component instanceof ffwdme.components.AutoZoom && this.inRouteOverview) {
@@ -157,11 +169,11 @@ var Leaflet = Base.extend({
         var destination = e.route.destination();
 
         var finishMarkerIcon = new L.Icon({
-            iconUrl: ffwdme.defaults.imageBaseUrl + 'leaflet/map_marker_finish.png',
-            shadowUrl: ffwdme.defaults.imageBaseUrl + 'leaflet/map_marker_shadow.png',
-            iconSize: new L.Point(32, 32),
-            shadowSize: new L.Point(32, 32),
-            iconAnchor: new L.Point(16, 32),
+            iconUrl: this.finishIcon,
+            shadowUrl: this.finishShadow,
+            iconSize: new L.Point(40, 40),
+            shadowSize: new L.Point(40, 40),
+            iconAnchor: new L.Point(20, 20),
             popupAnchor: new L.Point(-3, -76)
         });
 
@@ -217,7 +229,20 @@ var Leaflet = Base.extend({
         }
 
         // zoom the map to the polyline
-        if (center && !this.inRouteOverview) this.map.fitBounds(new L.LatLngBounds(latlngs));
+        var mapBounds = new L.LatLngBounds(latlngs);
+        if (this.additionalBounds !== null) {
+            mapBounds.extend(this.additionalBounds.getSouthWest());
+            mapBounds.extend(this.additionalBounds.getNorthEast());
+        }
+        if (center && !this.inRouteOverview) this.map.fitBounds(mapBounds);
+    },
+
+    setAdditionalBounds: function(addBounds) {
+        this.additionalBounds = addBounds;
+    },
+
+    clearAdditionalBounds: function() {
+        this.additionalBounds = null;
     },
 
     drawMarkerOnMap: function (lat, lng, center) {
@@ -225,18 +250,39 @@ var Leaflet = Base.extend({
         this.marker.setLatLng(loc);
         if (center && !this.inRouteOverview) {
             this.map.setView(loc, this.getZoom());
+            this.doneRouteOverview = false;
         } else {
 
-            // don't forget to account for rotation size padding.
+            if (!this.doneRouteOverview) {
 
-            var mapSize = this.map.getSize();
-            var mapHPadding = (mapSize.x - $(window).width()) / 2;
-            var mapVPadding = (mapSize.y - $(window).height()) / 2;
+                this.doneRouteOverview = true;
 
-            mapHPadding = 0;
-            mapVPadding = 0;
+                // don't forget to account for rotation size padding.
 
-            if (this.polylines !== null) this.map.fitBounds(this.polylines.overlay.getBounds(), {padding: [mapHPadding, mapVPadding]});
+                var mapSize = this.map.getSize();
+                var mapHPadding = (mapSize.x - $(window).width()) / 2;
+                var mapVPadding = (mapSize.y - $(window).height()) / 2;
+
+                mapHPadding = 0;
+                mapVPadding = 0;
+
+                var mapBounds = null;
+                if (this.polylines !== null) {
+                    mapBounds = this.polylines.overlay.getBounds()
+                }
+
+                if (this.additionalBounds !== null) {
+                    if (mapBounds === null) {
+                        mapBounds = this.additionalBounds;
+                    } else {
+                        mapBounds.extend(this.additionalBounds.getSouthWest());
+                        mapBounds.extend(this.additionalBounds.getNorthEast());
+                    }
+                }
+
+                if (mapBounds !== null) this.map.fitBounds(mapBounds, {padding: [mapHPadding, mapVPadding]});
+            }
+
         }
     },
 
