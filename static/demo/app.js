@@ -53,27 +53,47 @@ function init() {
         "C_1000": "Continue for 1 kilometer",
         "C_LONG": "Continue on this road",
         "FINISH": "You have arrived at your destination",
-        "EXIT1": "Take the first exit on to {{street}}",
-        "EXIT2": "Take the second exit on to {{street}}",
-        "EXIT3": "Take the third exit on to {{street}}",
-        "EXIT4": "Take the fourth exit on to {{street}}",
-        "EXIT5": "Take the fifth exit on to {{street}}"
+
+        "EXIT1_now": "Take the first exit on to {{street}}",
+        "EXIT1_100": "In 100m take the first exit on to {{street}}",
+        "EXIT1_500": "In 500m take the first exit",
+        "EXIT1_1000": "In 1 kilometer take the first exit",
+
+        "EXIT2_now": "Take the second exit on to {{street}}",
+        "EXIT2_100": "In 100m take the second exit on to {{street}}",
+        "EXIT2_500": "In 500m take the second exit",
+        "EXIT2_1000": "In 1 kilometer take the second exit",
+
+        "EXIT3_now": "Take the third exit on to {{street}}",
+        "EXIT3_100": "In 100m take the third exit on to {{street}}",
+        "EXIT3_500": "In 500m take the third exit",
+        "EXIT3_1000": "In 1 kilometer take the third exit",
+
+        "EXIT4_now": "Take the fourth exit on to {{street}}",
+        "EXIT4_100": "In 100m take the fourth exit on to {{street}}",
+        "EXIT4_500": "In 500m take the fourth exit",
+        "EXIT4_1000": "In 1 kilometer take the fourth exit",
+
+        "EXIT5_now": "Take the fifth exit on to {{street}}",
+        "EXIT5_100": "In 100m take the fifth exit on to {{street}}",
+        "EXIT5_500": "In 500m take the fifth exit",
+        "EXIT5_1000": "In 1 kilometer take the fifth exit",
     };
 
     window.widgets = {
         map: map,
-        autozoom: new ffwdme.components.AutoZoom({map: map}),
+        // autozoom: new ffwdme.components.AutoZoom({map: map}),
+        autozoomnextturn: new ffwdme.components.AutoZoomNextTurn({map: map}),
         reroute: new ffwdme.components.AutoReroute({parent: '#playground'}),
 
         nextTurn: new ffwdme.components.NextStreet({parent: '#playground', grid: {x: 4, y: 11}}),
-        distance: new ffwdme.components.DistanceToNextTurn({parent: '#playground', grid: {x: 5, y: 1, w: 4}}),
-
+        // distance: new ffwdme.components.DistanceToNextTurn({parent: '#playground', grid: {x: 1, y: 10, w: 3}}),
 
         // speed     : new ffwdme.components.Speed({ parent: '#playground', grid: { x: 1, y: 12 } }),
         destTime: new ffwdme.components.TimeToDestination({parent: '#playground', grid: {x: 4, y: 12}}),
         destDist: new ffwdme.components.DistanceToDestination({parent: '#playground', grid: {x: 7, y: 12}}),
         arrival: new ffwdme.components.ArrivalTime({parent: '#playground', grid: {x: 10, y: 12}, defaultUnit: ''}),
-        arrow: new ffwdme.components.Arrow({parent: '#playground', grid: {x: 0, y: 11}}),
+        arrow: new ffwdme.components.Arrow({parent: '#playground', grid: {x: 1, y: 11}}),
         audio: new ffwdme.components.AudioInstructionsWeb({
             parent: '#playground',
             grid: {x: 11, y: 1, w: 2},
@@ -88,7 +108,10 @@ function init() {
         // debugging
         // geoloc  : new ffwdme.debug.components.Geolocation({ parent: '#playground', grid: { x: 5, y: 1 }}),
         navInfo: new ffwdme.debug.components.NavInfo(),
-        routing: new ffwdme.debug.components.Routing()
+        routing: new ffwdme.debug.components.Routing(),
+
+        // startNav: new ffwdme.components.NavStart({parent: '#playground', grid: {x: 1, y: 5, w: 2}})
+
     };
 
     if ((/debug=/).test(window.location.href)) {

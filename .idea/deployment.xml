@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" autoUpload="Always" serverName="sftp DEV utah.lineten.net">
     <serverData>
       <paths name="sftp DEV utah.lineten.net">
         <serverdata>
           <mappings>
-            <mapping deploy="/nav" local="$PROJECT_DIR$" web="/nav" />
+            <mapping deploy="/scratch_www/nav" local="$PROJECT_DIR$" web="/nav" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
